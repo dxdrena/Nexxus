@@ -1,13 +1,13 @@
 FROM php:8.2-apache
 
-# Remove TODOS os MPMs e ativa só o prefork
-RUN a2dismod mpm_event mpm_worker mpm_prefork || true && \
+# Garante só 1 MPM (prefork)
+RUN a2dismod mpm_event mpm_worker || true && \
     a2enmod mpm_prefork
 
 # Instala extensões
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Ajusta porta do Railway
+# Ajusta porta Railway
 RUN sed -i 's/80/${PORT}/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
 # Copia arquivos
